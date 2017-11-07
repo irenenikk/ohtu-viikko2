@@ -2,3 +2,5 @@
 build/
 .vscode
 / .settings
+/ .project
+/ .classpath
