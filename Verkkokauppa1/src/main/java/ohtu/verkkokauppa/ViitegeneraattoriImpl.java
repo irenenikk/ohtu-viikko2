@@ -2,19 +2,9 @@ package ohtu.verkkokauppa;
 
 public class ViitegeneraattoriImpl implements Viitegeneraattori {
 
-    private static Viitegeneraattori instanssi;
-
-    public static Viitegeneraattori getInstance() {
-        if (instanssi == null) {
-            instanssi = new ViitegeneraattoriImpl();
-        }
-
-        return instanssi;
-    }
-    
     private int seuraava;
     
-    private ViitegeneraattoriImpl(){
+    public ViitegeneraattoriImpl(){
         seuraava = 1;    
     }
 

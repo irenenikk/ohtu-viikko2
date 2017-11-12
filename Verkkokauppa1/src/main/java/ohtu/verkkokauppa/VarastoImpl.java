@@ -4,23 +4,13 @@ import java.util.*;
 
 public class VarastoImpl implements Varasto {
 
-    private static Varasto instanssi;
-
     private Kirjanpito kirjanpito;
     private HashMap<Tuote, Integer> saldot;  
     
-    private VarastoImpl() {
-        kirjanpito = Kirjanpito.getInstance();
+    public VarastoImpl(Kirjanpito kirjanpito) {
+        this.kirjanpito = kirjanpito;
         saldot = new HashMap<Tuote, Integer>();
         alustaTuotteet();
-    }
-
-    public static Varasto getInstance() {
-        if (VarastoImpl.instanssi == null) {
-            VarastoImpl.instanssi = new VarastoImpl();
-        }
-
-        return VarastoImpl.instanssi;
     }
 
     @Override
