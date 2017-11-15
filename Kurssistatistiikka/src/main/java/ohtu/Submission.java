@@ -7,6 +7,7 @@ public class Submission {
     private int week;
     private int hours;
     private int[] exercises;
+    private Course course;
 
     public void setWeek(int week) {
         this.week = week;
@@ -30,15 +31,6 @@ public class Submission {
 
     public void setExercises(int[] exercises) {
         this.exercises = exercises;
-    }
-
-    @Override
-    public String toString() {
-        return "viikko " + week + ": " +
-                "tehtyjä tehtäviä yhteensä: " + exercises.length +
-                ", aikaa kului " + hours + " tuntia, " +
-                "tehdyt tehtävät: " +
-                Arrays.stream(exercises).mapToObj(i -> Integer.toString(i)).collect(Collectors.joining(" "));
     }
 
 }
