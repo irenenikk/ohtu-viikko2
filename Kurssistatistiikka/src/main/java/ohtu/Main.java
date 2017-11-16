@@ -1,12 +1,16 @@
 package ohtu;
 
-import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.apache.http.client.fluent.Request;
+import static ohtu.StatFetcher.getStatsAsJsonObject;
+import static ohtu.StatFetcher.getStatsAsObject;
 
 public class Main {
 
@@ -19,13 +23,11 @@ public class Main {
 
         String submissionUrl = "https://studies.cs.helsinki.fi/ohtustats/students/"+studentNr+"/submissions";
         String courseUrl = "https://studies.cs.helsinki.fi/ohtustats/courseinfo";
+        String totalStatUrl = "https://studies.cs.helsinki.fi/ohtustats/stats";
 
-        String submissionBodyText = Request.Get(submissionUrl).execute().returnContent().asString();
-        String courseBodyText = Request.Get(courseUrl).execute().returnContent().asString();
-
-        Gson mapper = new Gson();
-        Submission[] subs = mapper.fromJson(submissionBodyText, Submission[].class);
-        Course course = mapper.fromJson(courseBodyText, Course.class);
+        Submission[] subs = (Submission[]) getStatsAsObject(submissionUrl, Submission[].class);
+        Course course = (Course) getStatsAsObject(courseUrl, Course.class);
+        JsonObject totalStats = getStatsAsJsonObject(totalStatUrl);
 
         System.out.print("Opiskelijanumero: ");
         System.out.println(studentNr);
@@ -33,7 +35,7 @@ public class Main {
         System.out.print("Kurssi: ");
         System.out.println(course.getName() + ", " + course.getTerm());
 
-        int totalExercises = 0;
+        int totalExercisesForStudent = 0;
         int totalHours = 0;
         System.out.println();
         for (int i = 1; i <= course.getWeek(); i++) {
@@ -41,7 +43,7 @@ public class Main {
             Optional<Submission> sub = findSubmissionByWeek(subs, i);
             if (sub.isPresent()) {
                 Submission submission = sub.get();
-                totalExercises += submission.getExercises().length;
+                totalExercisesForStudent += submission.getExercises().length;
                 totalHours += submission.getHours();
                 System.out.print("    ");
                 System.out.println("" +
@@ -56,10 +58,20 @@ public class Main {
 
         System.out.println();
 
-        System.out.println("Yhteensä: " + totalExercises +
+        System.out.println("Yhteensä: " + totalExercisesForStudent +
                             " tehtävää ja " + totalHours +
                             " tuntia");
 
+        int totalSubmissions = 0;
+        int totalExercisesForCourse = 0;
+        for(Map.Entry<String, JsonElement> entry: totalStats.entrySet()) {
+            JsonObject weekData = entry.getValue().getAsJsonObject();
+            totalSubmissions += weekData.get("students").getAsInt();
+            totalExercisesForCourse += weekData.get("exercise_total").getAsInt();
+        }
+
+        System.out.println("Kurssilla yhteensä " + totalSubmissions + " palautusta" +
+                            ", palautettuja tehtäviä " + totalExercisesForCourse + " kpl.");
 
     }
 

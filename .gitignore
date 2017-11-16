@@ -4,4 +4,4 @@ build/
 / .settings
 / .project
 / .classpath
-*.idea
+*/.idea
