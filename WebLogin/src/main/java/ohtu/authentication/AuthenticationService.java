@@ -34,11 +34,28 @@ public class AuthenticationService {
             status.addError("username should have at least 3 characters");
         }
 
+        if (isInvalidPassword(password)) {
+            status.addError("password should have at least 8 characters and contain one number or special character");
+        }
+
+        if (!password.equals(passwordConfirmation)) {
+            status.addError("password and password confirmation do not match");
+        }
+
         if (status.isOk()) {
             userDao.add(new User(username, password));
         }
         
         return status;
     }
+
+    private boolean isInvalidPassword(String password) {
+        return (password.length() < 8) || !stringContainsAtLeastOneDigitOrSpecialCharacter(password);
+    }
+
+    private boolean stringContainsAtLeastOneDigitOrSpecialCharacter(String string) {
+        return string.matches("^(?=.*?[0-9]).{8,}$") || string.matches("(?=.*?[!\"#¤%&/()=?`^¨*_]).{8,}");
+    }
+
 
 }
