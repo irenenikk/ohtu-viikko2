@@ -4,5 +4,5 @@ build/
 / .settings
 / .project
 / .classpath
-*/.idea/*
-Kurssistatistiikka/.idea/*
+*.idea
+*.settings
